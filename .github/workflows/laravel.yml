@@ -1,0 +1,30 @@
+name: Minimal Difference
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Install PHP Extensions
+        run: sudo apt-get update && sudo apt-get install -y libpng-dev
+
+      - name: Set Permissions for vendor directory and phpunit
+        run: |
+          chmod -R 777 vendor/
+          chmod +x vendor/bin/phpunit
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest
+
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit
